@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var MintAddress = "FFF5zKJFLPd2tkGgCuShJaKXLL2dSae6ixzZ4LnKtbtH3848cipmupVues" //增发和预挖主地址
+var MintAddress = "FFF5ykma29oAcKrrXmQwJuaW2bfEynuaupEDzcsL6jn1JYXESVStzjzSa1" //增发和预挖主地址
 
 var MintBlockNum = big.NewInt(10000000) //多少个块增发一次
 
