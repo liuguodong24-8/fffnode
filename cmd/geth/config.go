@@ -114,10 +114,10 @@ func GetDefaultGenesis() *core.Genesis {
 
 	genesis := new(core.Genesis)
 	if err := json.Unmarshal([]byte(global_config.GenesisJson), genesis); err != nil {
-		utils.Fatalf("111invalid genesis file: %v", err)
+		utils.Fatalf("invalid genesis file: %v", err)
 		return nil
 	}
-	genesis.Alloc[common.HexToAddress(global_config.MintAddress)]=core.GenesisAccount{Balance:global_config.InitAllocReward}
+	genesis.Alloc[common.HexToAddress(global_config.MintAddress)] = core.GenesisAccount{Balance: global_config.InitAllocReward}
 	return genesis
 
 }

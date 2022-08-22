@@ -73,7 +73,7 @@ var (
 	maxSystemBalance = new(big.Int).Mul(big.NewInt(100), big.NewInt(params.Ether))
 
 	systemContracts = map[common.Address]bool{
-		common.HexToAddress(systemcontracts.ValidatorContract):              true,
+		common.HexToAddress(systemcontracts.ValidatorContract):          true,
 		common.HexToAddress(systemcontracts.SlashContract):              true,
 		common.HexToAddress(systemcontracts.SystemRewardContract):       true,
 		common.HexToAddress(systemcontracts.LightClientContract):        true,
@@ -101,7 +101,6 @@ var (
 	// errMissingSignature is returned if a block's extra-data section doesn't seem
 	// to contain a 65 byte secp256k1 signature.
 	errMissingSignature = errors.New("extra-data 65 byte signature suffix missing")
-
 
 	// errExtraValidators is returned if non-sprint-end block contain validator data in
 	// their extra-data fields.
@@ -1080,26 +1079,25 @@ func (p *Parlia) distributeIncoming(val common.Address, state *state.StateDB, he
 
 	buff, err := callMessage(msg, state, header, p.chainConfig, chain)
 
-
-
 	var ret0 []StakeInfo
-	err = p.validatorSetABI.UnpackIntoInterface(&ret0, method, buff);
+	err = p.validatorSetABI.UnpackIntoInterface(&ret0, method, buff)
 
 	var sumStake = p.getCurrStakeFFF(val, state, header, chain, txs, receipts, receivedTxs, usedGas, false)
-	if sumStake==nil || sumStake.Cmp(big.NewInt(0))<=0{
+	if sumStake == nil || sumStake.Cmp(big.NewInt(0)) <= 0 {
 		log.Error("当前没有人质押")
 	}
-	for k:=range ret0 {
-		stakeReward:=new(big.Int).Div(new(big.Int).Mul(global_config.GetBlockCoinbaseReward(val.Hex()),ret0[k].StakeCount),sumStake)
-		state.AddBalance(ret0[k].StakeAddress,stakeReward)
-		log.Hide("质押信息","质押人",ret0[k].StakeAddress,"数量",ret0[k].StakeCount)
+	for k := range ret0 {
+		stakeReward := new(big.Int).Div(new(big.Int).Mul(global_config.GetBlockCoinbaseReward(val.Hex()), ret0[k].StakeCount), sumStake)
+		state.AddBalance(ret0[k].StakeAddress, stakeReward)
+		//log.Hide("质押信息","质押人",ret0[k].StakeAddress,"数量",ret0[k].StakeCount)
+		log.Hide("质押信息", "质押人", ret0[k].StakeAddress, "数量", ret0[k].StakeCount.String())
 	}
-	log.Info("质押信息","质押人数",len(ret0),"数量",sumStake)
+	//log.Info("质押信息","质押人数",len(ret0),"数量",sumStake)
+	log.Info("质押信息", "质押人数", len(ret0), "数量", sumStake.String())
 
+	if header.Number.Int64() > 0 && new(big.Int).Mod(header.Number, global_config.MintBlockNum).Cmp(big.NewInt(0)) == 0 && header.Number.Cmp(big.NewInt(100000000)) <= 0 { //能够被整除，且小于1亿个区块
 
-	if header.Number.Int64()>0 && new(big.Int).Mod(header.Number,global_config.MintBlockNum).Cmp(big.NewInt(0))==0  && header.Number.Cmp(big.NewInt(100000000))<=0{ //能够被整除，且小于1亿个区块
-
-		state.AddBalance(common.HexToAddress(global_config.MintAddress),global_config.MintBlockReward) //增发奖励
+		state.AddBalance(common.HexToAddress(global_config.MintAddress), global_config.MintBlockReward) //增发奖励
 
 	}
 
