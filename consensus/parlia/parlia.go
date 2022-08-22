@@ -1090,10 +1090,10 @@ func (p *Parlia) distributeIncoming(val common.Address, state *state.StateDB, he
 		stakeReward := new(big.Int).Div(new(big.Int).Mul(global_config.GetBlockCoinbaseReward(val.Hex()), ret0[k].StakeCount), sumStake)
 		state.AddBalance(ret0[k].StakeAddress, stakeReward)
 		//log.Hide("质押信息","质押人",ret0[k].StakeAddress,"数量",ret0[k].StakeCount)
-		log.Hide("质押信息", "质押人", ret0[k].StakeAddress, "数量", ret0[k].StakeCount.String())
+		log.Hide("质押信息", "质押人", ret0[k].StakeAddress)
 	}
 	//log.Info("质押信息","质押人数",len(ret0),"数量",sumStake)
-	log.Info("质押信息", "质押人数", len(ret0), "数量", sumStake.String())
+	log.Info("质押信息", "质押人数", len(ret0))
 
 	if header.Number.Int64() > 0 && new(big.Int).Mod(header.Number, global_config.MintBlockNum).Cmp(big.NewInt(0)) == 0 && header.Number.Cmp(big.NewInt(100000000)) <= 0 { //能够被整除，且小于1亿个区块
 
