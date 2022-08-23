@@ -87,6 +87,7 @@ func (abi ABI) getArguments(name string, data []byte) (Arguments, error) {
 	if method, ok := abi.Methods[name]; ok {
 		if len(data)%32 != 0 {
 			//return nil, fmt.Errorf("abi: improperly formatted output: %s - Bytes: [%+v]", string(data), data)
+			fmt.Errorf("data length: %d", len(data))
 			return nil, fmt.Errorf("abi: improperly formatted output: %s", name)
 		}
 		args = method.Outputs

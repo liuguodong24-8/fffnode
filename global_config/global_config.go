@@ -114,7 +114,6 @@ var GenesisJson = `
   "gasUsed": "0x0",
   "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
 }
-
 `
 
 var ETH = big.NewInt(1e18)
