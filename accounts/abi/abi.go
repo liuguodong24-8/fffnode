@@ -21,7 +21,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/fff-chain/go-fff/log"
 	"io"
 
 	"github.com/fff-chain/go-fff/common"
@@ -86,7 +85,7 @@ func (abi ABI) getArguments(name string, data []byte) (Arguments, error) {
 	// we need to decide whether we're calling a method or an event
 	var args Arguments
 	if method, ok := abi.Methods[name]; ok {
-		log.Error("data length: %d", len(data))
+		//log.Error("data length: %d", len(data))
 
 		if len(data)%32 != 0 {
 			//return nil, fmt.Errorf("abi: improperly formatted output: %s - Bytes: [%+v]", string(data), data)
