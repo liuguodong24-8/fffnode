@@ -20,6 +20,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/fff-chain/go-fff/log"
 	"math/big"
 	"strings"
 	"sync"
@@ -146,6 +147,9 @@ func (c *BoundContract) Call(opts *CallOpts, results *[]interface{}, method stri
 			return ErrNoPendingState
 		}
 		output, err = pb.PendingCallContract(ctx, msg)
+		log.Info("**************")
+		log.Info("contract info :", output)
+		log.Info("**************")
 		if err == nil && len(output) == 0 {
 			// Make sure we have a contract to operate on, and bail out otherwise.
 			if code, err = pb.PendingCodeAt(ctx, c.address); err != nil {
@@ -156,6 +160,9 @@ func (c *BoundContract) Call(opts *CallOpts, results *[]interface{}, method stri
 		}
 	} else {
 		output, err = c.caller.CallContract(ctx, msg, opts.BlockNumber)
+		log.Info("**************")
+		log.Info("contract info :", output)
+		log.Info("**************")
 		if err != nil {
 			return err
 		}
