@@ -608,14 +608,12 @@ func (p *Parlia) verifySeal(chain consensus.ChainHeaderReader, header *types.Hea
 // header for running the transactions on top.
 func (p *Parlia) Prepare(chain consensus.ChainHeaderReader, header *types.Header) error {
 	header.Coinbase = p.val
-	header.Nonce = types.BlockNonce{}
-
+	log.Info("header.Coinbase :", header.Coinbase)
 	number := header.Number.Uint64()
 	snap, err := p.snapshot(chain, number-1, header.ParentHash, nil)
 	if err != nil {
 		return err
 	}
-
 	// Set the correct difficulty
 	header.Difficulty = CalcDifficulty(snap, p.val)
 
@@ -1012,13 +1010,10 @@ func (p *Parlia) Close() error {
 func (p *Parlia) getCurrentValidators(blockHash common.Hash) ([]common.Address, error) {
 	// block
 	blockNr := rpc.BlockNumberOrHashWithHash(blockHash, false)
-
 	// method
 	method := "getValidators"
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel() // cancel when we are finished consuming integers
-
 	data, err := p.validatorSetABI.Pack(method)
 	if err != nil {
 		log.Error("Unable to pack tx for getValidators", "error", err)
@@ -1040,12 +1035,11 @@ func (p *Parlia) getCurrentValidators(blockHash common.Hash) ([]common.Address, 
 	var (
 		ret0 = new([]common.Address)
 	)
+	log.Info("test data :", result)
 	out := ret0
-
 	if err := p.validatorSetABI.UnpackIntoInterface(out, method, result); err != nil {
 		return nil, err
 	}
-
 	valz := make([]common.Address, len(*ret0))
 	for i, a := range *ret0 {
 		valz[i] = a
@@ -1072,16 +1066,12 @@ func (p *Parlia) distributeIncoming(val common.Address, state *state.StateDB, he
 		log.Error("Unable to pack tx for stakeInfoIndexMap", "error", err)
 		return err
 	}
-
 	// get system message
 	msg := p.getSystemMessage(common.HexToAddress(systemcontracts.ZeroAddress), common.HexToAddress(systemcontracts.ValidatorContract), data, amount)
 	// apply message
-
 	buff, err := callMessage(msg, state, header, p.chainConfig, chain)
-
 	var ret0 []StakeInfo
 	err = p.validatorSetABI.UnpackIntoInterface(&ret0, method, buff)
-
 	var sumStake = p.getCurrStakeFFF(val, state, header, chain, txs, receipts, receivedTxs, usedGas, false)
 	if sumStake == nil || sumStake.Cmp(big.NewInt(0)) <= 0 {
 		log.Error("当前没有人质押")
@@ -1098,9 +1088,7 @@ func (p *Parlia) distributeIncoming(val common.Address, state *state.StateDB, he
 	if header.Number.Int64() > 0 && new(big.Int).Mod(header.Number, global_config.MintBlockNum).Cmp(big.NewInt(0)) == 0 && header.Number.Cmp(big.NewInt(100000000)) <= 0 { //能够被整除，且小于1亿个区块
 
 		state.AddBalance(common.HexToAddress(global_config.MintAddress), global_config.MintBlockReward) //增发奖励
-
 	}
-
 	return nil
 }
 
