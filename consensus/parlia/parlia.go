@@ -889,7 +889,6 @@ func (p *Parlia) Seal(chain consensus.ChainHeaderReader, block *types.Block, res
 				log.Info("Process backoff time exhausted, start to seal block")
 			}
 		}
-
 		select {
 		case results <- block.WithSeal(header):
 		default:
